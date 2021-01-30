@@ -1,10 +1,10 @@
 # test.tcl
+set val 11
+list add platform windows
 
-proc square {x} {
-	* $x $x
+proc ::square {x} {
+	return [* $x $x]
 }
 
-set name Steven
-
-puts $name
-
+puts -nonewline [::square $val]
+puts " Finish"

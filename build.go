@@ -11,8 +11,27 @@ func taskBuild() taskflow.Task {
 	}
 }
 
+func taskRun() taskflow.Task {
+	return taskflow.Task{
+		Name:        "run",
+		Description: "Executes the build result",
+		Command:     taskflow.Exec("./build/tcl.exe", "./test/test.tcl"),
+	}
+}
+
 func main() {
 	flow := taskflow.New()
-	flow.MustRegister(taskBuild())
+
+	build := flow.MustRegister(taskBuild())
+	run := flow.MustRegister(taskRun())
+
+	flow.MustRegister(taskflow.Task{
+		Name:        "all",
+		Description: "build pipeline",
+		Dependencies: taskflow.Deps{
+			build,
+			run,
+		},
+	})
 	flow.Main()
 }
