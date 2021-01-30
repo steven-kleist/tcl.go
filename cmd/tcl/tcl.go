@@ -17,6 +17,7 @@ const (
 
 type args struct {
 	Input string `arg:"positional" help:"File to parse/execute"`
+	Exec string `arg:"-e" help:"Script to evaluate before file processing."`
 }
 
 func (args) Version() string {
@@ -34,6 +35,14 @@ func main() {
 	if args.Input == "" {
 		fmt.Println("Please give a path...")
 		os.Exit(1)
+	}
+
+	if args.Exec != "" {
+		_, errr := tcl.Eval(args.Exec)
+		if errr != nil {
+			fmt.Println("Error:", errr)
+			os.Exit(1)
+		}
 	}
 
 	buf, err := ioutil.ReadFile(args.Input)
