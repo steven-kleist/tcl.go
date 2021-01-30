@@ -3,7 +3,7 @@ package tcl
 import (
 	"errors"
 	"fmt"
-	"log"
+	// "log"
 	"strings"
 )
 
@@ -47,12 +47,12 @@ func (i *Interp) Var(name string) (Var, bool) {
 	return "", false
 }
 func (i *Interp) SetVar(name, val string) {
-	log.Printf("[(*Interp).SetVar] name = %s, val = %s", name, val)
+	// log.Printf("[(*Interp).SetVar] name = %s, val = %s", name, val)
 	i.callframe.vars[name] = Var(val)
 }
 
 func (i *Interp) UnsetVar(name string) {
-	log.Printf("[(*Interp).UnsetVar] name = %s", name)
+	// log.Printf("[(*Interp).UnsetVar] name = %s", name)
 	delete(i.callframe.vars, name)
 }
 
@@ -92,14 +92,14 @@ func (i *Interp) Eval(t string) (string, error) {
 
 		switch p.Type {
 		case PT_VAR:
-			log.Printf("[(*Interp).Eval] p.Type == PT_VAR: t = %s", t)
+			// log.Printf("[(*Interp).Eval] p.Type == PT_VAR: t = %s", t)
 			v, ok := i.Var(t)
 			if !ok {
 				return "", fmt.Errorf("No such variable '%s'", t)
 			}
 			t = string(v)
 		case PT_CMD:
-			log.Printf("[(*Interp).Eval] p.Type == PT_CMD: t = %s", t)
+			// log.Printf("[(*Interp).Eval] p.Type == PT_CMD: t = %s", t)
 			result, err = i.Eval(t)
 			if err != nil {
 				return result, err
@@ -107,10 +107,10 @@ func (i *Interp) Eval(t string) (string, error) {
 			t = result
 
 		case PT_ESC:
-			log.Printf("[(*Interp).Eval] p.Type == PT_ESC: t = %s", t)
+			// log.Printf("[(*Interp).Eval] p.Type == PT_ESC: t = %s", t)
 			// XXX: escape handling missing!
 		case PT_SEP:
-			log.Printf("[(*Interp).Eval] p.Type == PT_SEP: t = %s", t)
+			// log.Printf("[(*Interp).Eval] p.Type == PT_SEP: t = %s", t)
 			prevtype = p.Type
 			continue
 		}
@@ -119,6 +119,7 @@ func (i *Interp) Eval(t string) (string, error) {
 		if p.Type == PT_EOL {
 			prevtype = p.Type
 			if len(argv) != 0 {
+				// log.Printf("[(*Interp).Eval] command: '%s'", argv[0])
 				c := i.Command(argv[0])
 				if c == nil {
 					return "", fmt.Errorf("No such command '%s'", argv[0])
