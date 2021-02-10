@@ -15,7 +15,6 @@ const (
 	PT_EOF
 )
 
-// Parser defines the Parser
 type Parser struct {
 	text              string
 	p, start, end, ln int
@@ -23,7 +22,6 @@ type Parser struct {
 	Type              int
 }
 
-// InitParser create a new `tcl.Parser`
 func InitParser(text string) *Parser {
 	return &Parser{text, 0, 0, 0, len(text), 0, PT_EOL}
 }
@@ -212,7 +210,6 @@ func (p *Parser) parseComment() string {
 	return p.token()
 }
 
-// GetToken returns the next parsed token
 func (p *Parser) GetToken() string {
 	for {
 		if p.ln == 0 {
@@ -249,5 +246,5 @@ func (p *Parser) GetToken() string {
 			return p.parseString()
 		}
 	}
-	// return p.token() /* unreached */
+	return p.token() /* unreached */
 }

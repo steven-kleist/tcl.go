@@ -3,90 +3,74 @@ package tcl
 import (
 	"errors"
 	"fmt"
+	// "log"
 	"strings"
 )
 
 var (
-	// ErrTclReturn symbols a default tcl return
-	ErrTclReturn   = errors.New("RETURN")
-	// ErrTclBreak symbols a tcl break
-	ErrTclBreak    = errors.New("BREAK")
-	// ErrTclContinue symbols a tcl continue
-	ErrTclContinue = errors.New("CONTINUE")
+	TCL_RETURN   = errors.New("RETURN")
+	TCL_BREAK    = errors.New("BREAK")
+	TCL_CONTINUE = errors.New("CONTINUE")
 )
 
-// Var represents a tcl variable
 type Var string
-
-// CmdFunc defines the signature of a tcl command used in tcl.go
 type CmdFunc func(i *Interp, argv []string, privdata interface{}) (string, error)
-
-// Cmd defines the space used for a command
 type Cmd struct {
 	fn       CmdFunc
 	privdata interface{}
 }
-// CallFrame defines the current tcl environment
 type CallFrame struct {
-	Vars   map[string]Var
-	Parent *CallFrame
+	vars   map[string]Var
+	parent *CallFrame
 }
-// Interp represents the tcl interpreter
 type Interp struct {
-	Level     int
-	CallFrame *CallFrame
-	Commands  map[string]Cmd
+	level     int
+	callframe *CallFrame
+	commands  map[string]Cmd
 }
 
-// InitInterp creates a new interpreter
 func InitInterp() *Interp {
 	return &Interp{
-		Level:     0,
-		CallFrame: &CallFrame{Vars: make(map[string]Var)},
-		Commands:  make(map[string]Cmd),
+		level:     0,
+		callframe: &CallFrame{vars: make(map[string]Var)},
+		commands:  make(map[string]Cmd),
 	}
 }
 
-// Var returns the value of a variable in the current interpreter
 func (i *Interp) Var(name string) (Var, bool) {
-	for frame := i.CallFrame; frame != nil; frame = frame.Parent {
-		v, ok := frame.Vars[name]
+	for frame := i.callframe; frame != nil; frame = frame.parent {
+		v, ok := frame.vars[name]
 		if ok {
 			return v, ok
 		}
 	}
 	return "", false
 }
-
-// SetVar sets the value of a variable in the current interpreter
 func (i *Interp) SetVar(name, val string) {
 	// log.Printf("[(*Interp).SetVar] name = %s, val = %s", name, val)
-	i.CallFrame.Vars[name] = Var(val)
+	i.callframe.vars[name] = Var(val)
 }
 
-// UnsetVar removes a variable from the current interpreter
 func (i *Interp) UnsetVar(name string) {
 	// log.Printf("[(*Interp).UnsetVar] name = %s", name)
-	delete(i.CallFrame.Vars, name)
+	delete(i.callframe.vars, name)
 }
 
-// Command returns the `tcl.Cmd` with the given name
 func (i *Interp) Command(name string) *Cmd {
-	v, ok := i.Commands[name]
+	v, ok := i.commands[name]
 	if !ok {
 		return nil
 	}
 	return &v
 }
 
-// RegisterCommand adds a new `tcl.Cmd` to the current interpreter
 func (i *Interp) RegisterCommand(name string, fn CmdFunc, privdata interface{}) error {
 	c := i.Command(name)
 	if c != nil {
 		return fmt.Errorf("Command '%s' already defined", name)
 	}
 
-	i.Commands[name] = Cmd{fn, privdata}
+	i.commands[name] = Cmd{fn, privdata}
 	return nil
 }
 

@@ -21,7 +21,7 @@ type args struct {
 }
 
 func (args) Version() string {
-	return fmt.Sprintf("%s v.%s\n", AppName, AppVersion)
+	return fmt.Sprintf("%s v.%s", AppName, AppVersion)
 }
 
 func main() {
@@ -29,10 +29,10 @@ func main() {
 	arg.MustParse(&args)
 
 	tcl := tcl.InitInterp()
-	registerCoreCommands(tcl)
-	tcl.RegisterCommand("puts", cmds.Puts, nil)
+	tcl.RegisterCoreCommands()
+	tcl.RegisterCommand("puts", cmds.CommandPuts, nil)
 
-	if args.Input == "" && args.Exec == "" {
+	if args.Input == "" {
 		fmt.Println("Please give a path...")
 		os.Exit(1)
 	}
@@ -57,21 +57,4 @@ func main() {
 		}
 	}
 	
-}
-
-
-func registerCoreCommands(i *tcl.Interp) {
-	name := [...]string{"+", "-", "*", "/", ">", ">=", "<", "<=", "==", "!="}
-	for _, n := range name {
-		i.RegisterCommand(n, cmds.Math, nil)
-	}
-	i.RegisterCommand("set", cmds.Set, nil)
-	i.RegisterCommand("unset", cmds.Unset, nil)
-	i.RegisterCommand("if", cmds.If, nil)
-	i.RegisterCommand("while", cmds.While, nil)
-	i.RegisterCommand("break", cmds.RetCodes, nil)
-	i.RegisterCommand("continue", cmds.RetCodes, nil)
-	i.RegisterCommand("proc", cmds.Proc, nil)
-	i.RegisterCommand("return", cmds.Return, nil)
-	i.RegisterCommand("error", cmds.Error, nil)
 }
