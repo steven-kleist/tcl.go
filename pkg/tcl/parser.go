@@ -1,6 +1,7 @@
 package tcl
 
 import (
+	"strings"
 	"unicode"
 	"unicode/utf8"
 )
@@ -25,6 +26,7 @@ type Parser struct {
 
 // InitParser create a new `tcl.Parser`
 func InitParser(text string) *Parser {
+	text = strings.ReplaceAll(text, "\r\n", "\n")
 	return &Parser{text, 0, 0, 0, len(text), 0, PT_EOL}
 }
 
