@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/alexflint/go-arg"
-	"github.com/stevenkl/tcl.go/pkg/tcl"
 	"github.com/stevenkl/tcl.go/pkg/cmds"
+	"github.com/stevenkl/tcl.go/pkg/tcl"
 )
 
 const (
@@ -17,7 +17,7 @@ const (
 
 type args struct {
 	Input string `arg:"positional" help:"File to parse/execute"`
-	Exec string `arg:"-e" help:"Script to evaluate before file processing."`
+	Exec  string `arg:"-e" help:"Script to evaluate before file processing."`
 }
 
 func (args) Version() string {
@@ -31,6 +31,7 @@ func main() {
 	tcl := tcl.InitInterp()
 	registerCoreCommands(tcl)
 	tcl.RegisterCommand("puts", cmds.Puts, nil)
+	tcl.RegisterCommand("append", cmds.Append, nil)
 
 	if args.Input == "" && args.Exec == "" {
 		fmt.Println("Please give a path...")
@@ -40,7 +41,7 @@ func main() {
 	if args.Exec != "" {
 		_, errr := tcl.Eval(args.Exec)
 		if errr != nil {
-			fmt.Println("Error:", errr)
+			fmt.Print("Error:", errr)
 			os.Exit(1)
 		}
 	}
@@ -53,12 +54,11 @@ func main() {
 		if err != nil {
 			fmt.Println("Error:", err, result)
 		} else {
-			fmt.Println(result)
+			fmt.Print(result)
 		}
 	}
-	
-}
 
+}
 
 func registerCoreCommands(i *tcl.Interp) {
 	name := [...]string{"+", "-", "*", "/", ">", ">=", "<", "<=", "==", "!="}
