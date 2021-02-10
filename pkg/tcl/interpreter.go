@@ -90,6 +90,25 @@ func (i *Interp) RegisterCommand(name string, fn CmdFunc, privdata interface{}) 
 	return nil
 }
 
+// CmdDef represents a tcl command for registration in tcl.
+type CmdDef struct {
+	Name string
+	Fn CmdFunc
+	Privdata interface{}
+}
+
+// RegisterCommands registers a list of commands
+func (i *Interp) RegisterCommands(cmds []CmdDef) error {
+	var err error
+	for _, cmd := range cmds {
+		err = i.RegisterCommand(cmd.Name, cmd.Fn, cmd.Privdata)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Eval evaluates the given string
 func (i *Interp) Eval(t string) (string, error) {
 	p := InitParser(t)

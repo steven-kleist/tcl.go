@@ -28,10 +28,13 @@ func main() {
 	var args args
 	arg.MustParse(&args)
 
-	tcl := tcl.InitInterp()
-	registerCoreCommands(tcl)
-	tcl.RegisterCommand("puts", cmds.Puts, nil)
-	tcl.RegisterCommand("append", cmds.Append, nil)
+	interpreter := tcl.InitInterp()
+	registerCoreCommands(interpreter)
+	interpreter.RegisterCommands([]tcl.CmdDef{
+		{Name: "puts", Fn: cmds.Puts, Privdata: nil},
+		{Name: "append", Fn: cmds.Append, Privdata: nil},
+		{Name: "pwd", Fn: cmds.Pwd, Privdata: nil},
+	})
 
 	if args.Input == "" && args.Exec == "" {
 		fmt.Println("Please give a path...")
@@ -39,7 +42,7 @@ func main() {
 	}
 
 	if args.Exec != "" {
-		_, errr := tcl.Eval(args.Exec)
+		_, errr := interpreter.Eval(args.Exec)
 		if errr != nil {
 			fmt.Print("Error:", errr)
 			os.Exit(1)
@@ -50,7 +53,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Error:", err)
 	} else {
-		result, err := tcl.Eval(string(buf))
+		result, err := interpreter.Eval(string(buf))
 		if err != nil {
 			fmt.Println("Error:", err, result)
 		} else {
