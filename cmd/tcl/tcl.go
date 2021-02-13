@@ -34,6 +34,7 @@ func main() {
 		{Name: "puts", Fn: cmds.Puts, Privdata: nil},
 		{Name: "append", Fn: cmds.Append, Privdata: nil},
 		{Name: "pwd", Fn: cmds.Pwd, Privdata: nil},
+		{Name: "cd", Fn: cmds.Cd, Privdata: nil},
 	})
 
 	if args.Input == "" && args.Exec == "" {

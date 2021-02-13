@@ -13,3 +13,8 @@ puts -nonewline [::square [set val]]
 puts " Finish"
 
 puts "Hello, $user"
+puts "Current dir: [pwd]"
+
+puts "Changing dir one level up"
+cd ..
+puts "Current dir now: [pwd]"
