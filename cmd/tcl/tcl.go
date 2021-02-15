@@ -35,6 +35,7 @@ func main() {
 		{Name: "append", Fn: cmds.Append, Privdata: nil},
 		{Name: "pwd", Fn: cmds.Pwd, Privdata: nil},
 		{Name: "cd", Fn: cmds.Cd, Privdata: nil},
+		{Name: "require", Fn: cmds.Require, Privdata: make(map[string]bool)},
 	})
 
 	if args.Input == "" && args.Exec == "" {

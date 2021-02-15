@@ -16,5 +16,13 @@ puts "Hello, $user"
 puts "Current dir: [pwd]"
 
 puts "Changing dir one level up"
-cd ..
+# cd ..
 puts "Current dir now: [pwd]"
+
+
+require "func.tcl"
+say-hello "Steven"
+say-bye World
+
+set res [require "include-with-result.tcl"]
+puts "Result: $res"
