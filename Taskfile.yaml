@@ -1,0 +1,30 @@
+%YAML 1.1
+---
+version: "3"
+
+
+vars:
+  CMD: cmd.exe /c
+  TARGET_NAME: 'tcl{{exeExt}}'
+
+tasks:
+
+  build:
+    desc: Build the project
+    cmds:
+      - go build -o ./build/{{.TARGET_NAME}} ./cmd/tcl
+  
+  test:
+    desc: Run go tests
+    cmds:
+      - go test -v ./...
+  
+  run:
+    desc: Run go-tcl with test script
+    cmds:
+      - ./build/tcl.exe ./test/test.tcl
+  
+  clean:
+    desc: Cleanup workspace
+    cmds:
+      - '{{.CMD}} del build\\{{.TARGET_NAME}}'

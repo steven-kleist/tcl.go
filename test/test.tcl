@@ -20,9 +20,9 @@ puts "Changing dir one level up"
 puts "Current dir now: [pwd]"
 
 
-require "func.tcl"
+require "test/func.tcl"
 say-hello "Steven"
 say-bye World
 
-set res [require "include-with-result.tcl"]
+set res [require "test/include-with-result.tcl"]
 puts "Result: $res"
